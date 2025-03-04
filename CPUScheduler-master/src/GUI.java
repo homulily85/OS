@@ -54,8 +54,7 @@ public class GUI
         table.getColumnModel().getColumn(4).setPreferredWidth(60);  // Queue
         table.getColumnModel().getColumn(5).setPreferredWidth(80);  // Waiting Time
         table.getColumnModel().getColumn(6).setPreferredWidth(100); // Turn Around Time
-        table.getColumnModel().getColumn(7).setPreferredWidth(90);  // Response Time - increased from 80 to 90
-        
+        table.getColumnModel().getColumn(7).setPreferredWidth(90);  // Response Time 
         tablePane = new JScrollPane(table);
         tablePane.setBounds(25, 25, 550, 250);  // Increased width from 450 to 550
         
