@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +28,21 @@ public class ShortestJobFirstNonPreemptive extends CPUScheduler {
                 if (row.getArrivalTime() <= time) {
                     availableRows.add(row);
                 }
+            }
+
+            // Handle empty ready queue
+            if (availableRows.isEmpty()) {
+                // Find next arrival time
+                int nextArrival = Integer.MAX_VALUE;
+                for (Row row : rows) {
+                    if (row.getArrivalTime() > time && row.getArrivalTime() < nextArrival) {
+                        nextArrival = row.getArrivalTime();
+                    }
+                }
+                // Add IDLE event
+                this.getTimeline().add(new Event("IDLE", time, nextArrival, true));
+                time = nextArrival;
+                continue;
             }
 
             // Sort them to determine the order

@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -6,7 +5,6 @@ import java.util.List;
 public class PriorityNonPreemptive extends CPUScheduler {
     @Override
     public void process() {
-        // Like SFS but sort by priority
         Collections.sort(this.getRows(), (Object o1, Object o2) -> {
             if (((Row) o1).getArrivalTime() == ((Row) o2).getArrivalTime()) {
                 return 0;
@@ -27,6 +25,18 @@ public class PriorityNonPreemptive extends CPUScheduler {
                 if (row.getArrivalTime() <= time) {
                     availableRows.add(row);
                 }
+            }
+            
+            if (availableRows.isEmpty()) {
+                int nextArrival = Integer.MAX_VALUE;
+                for (Row row : rows) {
+                    if (row.getArrivalTime() > time && row.getArrivalTime() < nextArrival) {
+                        nextArrival = row.getArrivalTime();
+                    }
+                }
+                this.getTimeline().add(new Event("IDLE", time, nextArrival, true));
+                time = nextArrival;
+                continue;
             }
 
             Collections.sort(availableRows, (Object o1, Object o2) -> {

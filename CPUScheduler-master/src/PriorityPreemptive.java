@@ -7,7 +7,6 @@ import java.util.Map;
 public class PriorityPreemptive extends CPUScheduler {
     @Override
     public void process() {
-        // Sort by arrival time first to choose which to start first
         Collections.sort(this.getRows(), (Object o1, Object o2) -> {
             if (((Row) o1).getArrivalTime() == ((Row) o2).getArrivalTime()) {
                 return 0;
@@ -28,6 +27,18 @@ public class PriorityPreemptive extends CPUScheduler {
                 if (row.getArrivalTime() <= time) {
                     availableRows.add(row);
                 }
+            }
+
+            if (availableRows.isEmpty()) {
+                int nextArrival = Integer.MAX_VALUE;
+                for (Row row : rows) {
+                    if (row.getArrivalTime() > time && row.getArrivalTime() < nextArrival) {
+                        nextArrival = row.getArrivalTime();
+                    }
+                }
+                this.getTimeline().add(new Event("IDLE", time, nextArrival, true));
+                time = nextArrival;
+                continue;
             }
 
             Collections.sort(availableRows, (Object o1, Object o2) -> {
@@ -64,12 +75,10 @@ public class PriorityPreemptive extends CPUScheduler {
         }
 
         Map<String, Boolean> firstResponse = new HashMap<>();
-        // Initialize response tracking
         for (Row row : this.getRows()) {
             firstResponse.put(row.getProcessName(), false);
         }
 
-        // In the main processing loop after creating timeline:
         for (Event event : this.getTimeline()) {
             for (Row row : this.getRows()) {
                 if (event.getProcessName().equals(row.getProcessName()) && !firstResponse.get(row.getProcessName())) {

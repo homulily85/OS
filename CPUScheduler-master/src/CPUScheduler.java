@@ -117,6 +117,5 @@ public abstract class CPUScheduler
         }
         return null;
     }
-    
     public abstract void process();
 }

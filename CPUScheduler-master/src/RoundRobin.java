@@ -33,6 +33,14 @@ public class RoundRobin extends CPUScheduler {
         }
 
         while (!rows.isEmpty()) {
+            // If no process is ready yet, increment time
+            if (rows.get(0).getArrivalTime() > time) {
+                // Add IDLE event
+                this.getTimeline().add(new Event("IDLE", time, rows.get(0).getArrivalTime(), true));
+                time = rows.get(0).getArrivalTime();
+                continue;
+            }
+
             Row row = rows.get(0);
             int bt = Math.min(row.getBurstTime(), timeQuantum);
             

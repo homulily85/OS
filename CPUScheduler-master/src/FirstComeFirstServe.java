@@ -1,11 +1,9 @@
-
 import java.util.Collections;
 import java.util.List;
 
 public class FirstComeFirstServe extends CPUScheduler {
     @Override
     public void process() {
-        // Sort by arrival time to determine the order
         Collections.sort(this.getRows(), (Object o1, Object o2) -> {
             if (((Row) o1).getArrivalTime() == ((Row) o2).getArrivalTime()) {
                 return 0;
@@ -17,16 +15,17 @@ public class FirstComeFirstServe extends CPUScheduler {
         });
 
         List<Event> timeline = this.getTimeline();
+        int currentTime = this.getRows().get(0).getArrivalTime();
 
         for (Row row : this.getRows()) {
-            if (timeline.isEmpty()) {
-                timeline.add(new Event(row.getProcessName(), row.getArrivalTime(),
-                        row.getArrivalTime() + row.getBurstTime()));
-            } else {
-                Event event = timeline.get(timeline.size() - 1);
-                timeline.add(new Event(row.getProcessName(), event.getFinishTime(),
-                        event.getFinishTime() + row.getBurstTime()));
+            if (row.getArrivalTime() > currentTime) {
+                timeline.add(new Event("IDLE", currentTime, row.getArrivalTime(), true));
+                currentTime = row.getArrivalTime();
             }
+
+            timeline.add(new Event(row.getProcessName(), currentTime,
+                    currentTime + row.getBurstTime()));
+            currentTime += row.getBurstTime();
         }
 
         for (Row row : this.getRows()) {

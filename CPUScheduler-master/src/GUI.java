@@ -34,21 +34,19 @@ public class GUI
     private JLabel rtResultLabel;
     private JComboBox<String> option;
     private DefaultTableModel model;
-    private int processCounter = 1;  // Add this class variable to track process numbers
+    private int processCounter = 1;  
     
     public GUI()
     {
         model = new DefaultTableModel(new String[]{"Process", "Arrival Time", "Burst Time", "Priority", "Queue", "Waiting time", "Turn around time", "Response time"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Make metrics columns non-editable
                 return column != 5 && column != 6 && column != 7;
             }
         };
         
         table = new JTable(model);
         table.setFillsViewportHeight(true);
-        // Adjust column widths to ensure headers are visible
         table.getColumnModel().getColumn(0).setPreferredWidth(60);  // Process
         table.getColumnModel().getColumn(1).setPreferredWidth(80);  // Arrival Time
         table.getColumnModel().getColumn(2).setPreferredWidth(80);  // Burst Time
